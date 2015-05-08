@@ -1,0 +1,12 @@
+#include <unistd.h>
+
+int main(){
+	rename("file.c","file4.c");
+	remove("file1");
+	remove("kk");
+
+	mkdir("tty",0777);
+	rmdir("tty");
+	return 0;
+
+}

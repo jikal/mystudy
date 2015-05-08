@@ -1,0 +1,58 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#include<sys/types.h>
+#include<unistd.h>
+#include<fcntl.h>
+#include<errno.h>
+#include<sys/stat.h>
+#define FIFONAME "/temp/fifoswp"
+
+void writefifo(){
+	int fd;
+	char buf[1024];
+	fd=open(FIFONAME,O_WRONLY);
+
+	do{
+		scanf("%s",buf);
+		write(fd,buf,strlen(buf)+1);
+	}while(strcmp("exit",buf)!=0);
+	close(fd);
+}
+
+void readfifo(){
+	int fd,cnt;
+	char buf[1024];
+	
+	remove(FIFONAME);
+	mkfifo(FIFONAME,0644);
+	fd=open(FIFONAME,O_RDONLY);
+	do{
+		cnt=read(fd,buf,sizeof(buf));	
+		if(0==cnt){
+			printf("writen closed!\n");
+			break;
+		}else if(-1==cnt){
+			if(errno==EINTR){
+				continue;
+			}else{
+				break;			
+			}
+		}else{
+			printf("read fifo:%s\n",buf);
+		}
+	}while(strcmp(buf,"exit")!=0);
+	close(fd);
+}
+int main(int argc,char** argv){
+	switch(argv[1][0]){
+		case 'w':
+			writefifo();
+			break;
+		case 'r':
+			readfifo();
+			break;
+		default:break;	
+	}
+	return 0;
+}

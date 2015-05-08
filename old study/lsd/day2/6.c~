@@ -1,0 +1,9 @@
+#include<stdio.h>
+#include<unistd.h>
+
+int main(){
+	int su;
+	truncate("m.txt",16);
+
+	return 0;
+}

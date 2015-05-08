@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>chat</class>
+ <widget class="QWidget" name="chat">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>301</width>
+    <height>311</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>30</y>
+     <width>258</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTextEdit" name="messageTextEdit"/>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="sendMessageLineEdit"/>
+    </item>
+    <item>
+     <widget class="QPushButton" name="sendMessageButton">
+      <property name="text">
+       <string>发送消息</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <zorder>sendMessageButton</zorder>
+  <zorder>sendMessageLineEdit</zorder>
+  <zorder>messageTextEdit</zorder>
+  <zorder></zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

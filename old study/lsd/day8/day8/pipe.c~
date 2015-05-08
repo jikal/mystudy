@@ -1,0 +1,48 @@
+//匿名管道
+
+#include<stdio.h>
+#include<sys/types.h>
+#include<unistd.h>
+#include<string.h>
+#include<errno.h>
+#include<sys/wait.h>
+
+int main(){
+	int fds[2];
+	pid_t pid;
+	char buf[1024];
+	//pid=fork();
+	int cnt;
+	pipe(fds);
+	pid=fork();
+	if(pid==0){
+		close(fds[0]);
+		do{
+			scanf("%s",buf);
+			write(fds[1],buf,sizeof(buf));			
+		}while(strcmp("exit",buf)!=0);
+		close(fds[1]);
+	}else if(pid>0){
+		close(fds[1]);	
+		do{		
+			cnt=read(fds[0],buf,sizeof(buf));
+
+			if(cnt==0){
+				printf("writen clsoed!\n");
+				break;		
+			}else if(cnt==-1){
+				if(errno==EINTR){
+					continue;
+				}else{
+					break;
+				}
+			}else{
+				printf("read pipe: %s\n ",buf);
+			}
+		}while(strcmp(buf,"exit")!=0);
+		close(fds[0]);
+		wait(NULL);
+	}else 
+		;
+	return 0;
+}

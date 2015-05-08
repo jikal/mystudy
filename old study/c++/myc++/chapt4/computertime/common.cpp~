@@ -1,0 +1,8 @@
+#include "common.h"
+using namespace iotek;
+Common::Common(const string& tool)
+	:t_tool(tool)
+{
+}
+
+

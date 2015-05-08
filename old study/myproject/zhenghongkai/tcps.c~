@@ -1,0 +1,89 @@
+#include<pthread.h>
+#define PORT 3333
+#include "link.h"
+#include "control.h"
+#include "mode.h"
+int main(){
+	/*用户链表分配空间，并初始化*/
+	head=(Node *)calloc(1,sizeof(Node));
+	if(head == NULL){
+		return -1; 
+	}
+	head->next=head;
+	head->prev=head;
+	/*日志链表分配空间，并初始化*/
+	dhead=(Daily *)calloc(1,sizeof(Daily));
+	if(head==NULL){
+		return -1;
+	}
+	dhead->next=dhead;
+	dhead->prev=dhead;
+	/*用户会话链表分配空间，并初始化*/
+	ihead=(clientinfo *)calloc(1,sizeof(clientinfo));
+	if(head==NULL){
+		return -1;
+	}
+	ihead->next=ihead;
+	ihead->prev=ihead;
+	ReadList("./server_usr.txt");//从链表中读取用户信息	
+	int sockfd = -1;
+	int newsock = -1;
+	pthread_t id;
+	char ipbuf[64];
+	pthread_attr_t attr;//线程属性
+	pthread_attr_init(&attr);	//线程初始化
+	struct sockaddr_in serveraddr,clientaddr;//定义一个socksddr_in结构体
+	memset(&serveraddr,0,sizeof(serveraddr));
+	socklen_t len;
+	
+	signal(SIGINT,function);
+	sockfd=socket(AF_INET,SOCK_STREAM,0);//创建套结字，返回描述符sockfd
+	//printf("%d\n",sockfd);
+	if(sockfd == -1){
+		printf("sockfd failed!\n");
+		exit(0);
+	}
+	pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_DETACHED);//线程分离属性
+	serveraddr.sin_family = AF_INET;//地址族
+	serveraddr.sin_port = htons((short)PORT);//端口号
+	serveraddr.sin_addr.s_addr = INADDR_ANY;//响应所有接口
+	if(bind(sockfd,(struct sockaddr*) & serveraddr,sizeof(serveraddr))==-1){//绑定本地地址和端口
+		printf("bind failed!\n");
+		exit(0);
+	}
+	if(listen(sockfd,256)==-1){//监听
+		printf("listen failed!\n");
+		exit(0);
+	}
+
+	len=sizeof(clientaddr);
+	while(1){
+		newsock=accept(sockfd,(struct sockaddr*) & clientaddr,&len);//提取链接客户
+		if(newsock == -1){
+			if(errno == EINTR){
+				continue;
+			}else{
+				break;
+			}
+		}
+		
+		inet_ntop(AF_INET,&clientaddr.sin_addr.s_addr,ipbuf,sizeof(ipbuf));//转换成网络字节序	
+		Cache *cache = (Cache *)calloc(1,sizeof(Cache));//声明一个结构体存放newsock,和客户ip
+		cache->fd = newsock;//
+		strcpy(cache->clientip,ipbuf);
+		time_t t;
+		time(&t);
+		char *tm = ctime(&t);
+		printf("IP:[%s]  STATE: Connected  TIME: %s", ipbuf,tm);
+		pthread_create(&id,&attr,proc_echo,(void *)cache);
+	}
+	DestrayList(head);
+	DestraydailyList(dhead);
+	DestrayinfoList(ihead);
+	free(my);
+	free(head);
+	free(ihead);
+	free(dhead);
+	close(sockfd);
+	return 0;
+}
