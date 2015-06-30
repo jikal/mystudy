@@ -17,7 +17,7 @@ void reg_menu(void){
 	printf(" 1.用户注册  \n");
 	printf(" 2.用户登陆  \n");
 	printf(" 3.管理员登陆  \n");
-	printf(" 4.退出  \n");
+	printf(" 0.退出  \n");
 	printf(" ********************************\n");
 	printf("请输入选择:");
 }

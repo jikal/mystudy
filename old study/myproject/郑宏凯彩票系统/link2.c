@@ -98,9 +98,11 @@ void DestrayList(Node *head){
 	head->prev=head;
 	head->next=head;
 }
+
 int DelByName(Node *p1,Node *p2){
 	return strcmp(p1->name,p2->name);
 }
+
 /*
 	函数功能：根据数据删除节点
 	函数参数：head_头节点 ,e_要删除的数据,f_回调函数

@@ -72,7 +72,7 @@ int admin(void){
 //清空缓存
 void myfflush(void){
 	int ch=0;
-	while(((ch=getchar()))!='\n' && (ch != EOF));
+	while(((ch=getchar()))!='\n'&& (ch != EOF));
 }
 //回车继续
 void push_continue(void){
